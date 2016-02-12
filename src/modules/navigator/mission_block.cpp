@@ -49,6 +49,7 @@
 #include <systemlib/err.h>
 #include <geo/geo.h>
 #include <mavlink/mavlink_log.h>
+#include <mathlib/mathlib.h>
 
 #include <uORB/uORB.h>
 #include <uORB/topics/actuator_controls.h>
@@ -72,7 +73,8 @@ MissionBlock::MissionBlock(Navigator *navigator, const char *name) :
 	_actuators{},
 	_actuator_pub(nullptr),
 	_cmd_pub(nullptr),
-	_param_yaw_timeout(this, "MIS_YAW_TMT", false)
+	_param_yaw_timeout(this, "MIS_YAW_TMT", false),
+	_param_yaw_err(this, "MIS_YAW_ERR", false),
 	_param_vtol_wv_land(this, "VT_WV_LND_EN", false),
 	_param_vtol_wv_loiter(this, "VT_WV_LTR_EN", false)
 {
@@ -193,7 +195,7 @@ MissionBlock::is_mission_item_reached()
 			/* check yaw if defined only for rotary wing except takeoff */
 			float yaw_err = _wrap_pi(_mission_item.yaw - _navigator->get_global_position()->yaw);
 
-			if (fabsf(yaw_err) < 0.2f /* TODO: get rid of magic number */
+			if (fabsf(yaw_err) < math::radians(_param_yaw_err.get())
 					|| (_param_yaw_timeout.get() >= -FLT_EPSILON &&
 						now - _time_wp_reached >= (hrt_abstime)_param_yaw_timeout.get() * 1e6f)) {
 				_waypoint_yaw_reached = true;

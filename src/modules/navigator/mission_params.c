@@ -120,3 +120,12 @@ PARAM_DEFINE_INT32(MIS_YAWMODE, 1);
  * @group Mission
  */
 PARAM_DEFINE_FLOAT(MIS_YAW_TMT, -1.0f);
+
+/**
+ * Max yaw error in degree needed for waypoint heading acceptance.
+ *
+ * @min 0
+ * @max 90
+ * @group Mission
+ */
+PARAM_DEFINE_FLOAT(MIS_YAW_ERR, 12.0f);

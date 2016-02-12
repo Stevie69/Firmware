@@ -45,9 +45,6 @@
 
 #include <navigator/navigation.h>
 
-#include <controllib/blocks.hpp>
-#include <controllib/block/BlockParam.hpp>
-
 #include <uORB/topics/mission.h>
 #include <uORB/topics/vehicle_global_position.h>
 #include <uORB/topics/position_setpoint_triplet.h>
@@ -135,6 +132,7 @@ protected:
 	orb_advert_t	_cmd_pub;
 
 	control::BlockParamFloat _param_yaw_timeout;
+	control::BlockParamFloat _param_yaw_err;
 	control::BlockParamInt _param_vtol_wv_land;
 	control::BlockParamInt _param_vtol_wv_loiter;
 };
