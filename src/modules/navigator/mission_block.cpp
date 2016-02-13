@@ -198,7 +198,15 @@ MissionBlock::is_mission_item_reached()
 			if (fabsf(yaw_err) < math::radians(_param_yaw_err.get())
 					|| (_param_yaw_timeout.get() >= -FLT_EPSILON &&
 						now - _time_wp_reached >= (hrt_abstime)_param_yaw_timeout.get() * 1e6f)) {
-				_waypoint_yaw_reached = true;
+
+				// if heading needs to be reached but we got here because of the timeout, abort mission
+				if (_mission_item.force_heading && !(fabsf(yaw_err) < math::radians(_param_yaw_err.get()))) {
+					_navigator->get_mission_result()->mission_failure = true;
+					_navigator->set_mission_result_updated();
+
+				} else {
+					_waypoint_yaw_reached = true;
+				}
 			}
 
 		} else {
