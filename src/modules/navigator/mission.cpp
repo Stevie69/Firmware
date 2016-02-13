@@ -219,6 +219,8 @@ Mission::update_onboard_mission()
 
 		// XXX check validity here as well
 		_navigator->get_mission_result()->valid = true;
+		/* reset mission failure if we have an updated valid mission */
+		_navigator->get_mission_result()->mission_failure = false;
 		_navigator->increment_mission_instance_count();
 		_navigator->set_mission_result_updated();
 
@@ -263,7 +265,10 @@ Mission::update_offboard_mission()
 				_navigator->get_vstatus()->condition_landed);
 
 		_navigator->get_mission_result()->valid = !failed;
-		_navigator->get_mission_result()->mission_failure = false;
+		if (!failed) {
+			/* reset mission failure if we have an updated valid mission */
+			_navigator->get_mission_result()->mission_failure = false;
+		}
 		_navigator->increment_mission_instance_count();
 		_navigator->set_mission_result_updated();
 
@@ -984,7 +989,6 @@ Mission::report_do_jump_mission_changed(int index, int do_jumps_remaining)
 	_navigator->get_mission_result()->item_do_jump_changed = true;
 	_navigator->get_mission_result()->item_changed_index = index;
 	_navigator->get_mission_result()->item_do_jump_remaining = do_jumps_remaining;
-	_navigator->get_mission_result()->mission_failure = false;
 	_navigator->set_mission_result_updated();
 }
 
@@ -993,7 +997,6 @@ Mission::set_mission_item_reached()
 {
 	_navigator->get_mission_result()->reached = true;
 	_navigator->get_mission_result()->seq_reached = _current_offboard_mission_index;
-	_navigator->get_mission_result()->mission_failure = false;
 	_navigator->set_mission_result_updated();
 	reset_mission_item_reached();
 }
@@ -1004,7 +1007,6 @@ Mission::set_current_offboard_mission_item()
 	_navigator->get_mission_result()->reached = false;
 	_navigator->get_mission_result()->finished = false;
 	_navigator->get_mission_result()->seq_current = _current_offboard_mission_index;
-	_navigator->get_mission_result()->mission_failure = false;
 	_navigator->set_mission_result_updated();
 
 	save_offboard_mission_state();
