@@ -107,7 +107,11 @@ public:
 	 */
 	virtual void fill_actuator_outputs() = 0;
 
-	virtual void waiting_on_fw_ctl() {};
+	/**
+	 * Special handling opportunity for the time right after transition to FW
+	 * before TECS is running.
+	 */
+	virtual void waiting_on_tecs() {};
 
 	void set_idle_mc();
 	void set_idle_fw();
