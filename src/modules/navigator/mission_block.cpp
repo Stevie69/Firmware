@@ -195,7 +195,9 @@ MissionBlock::is_mission_item_reached()
 			/* check yaw if defined only for rotary wing except takeoff */
 			float yaw_err = _wrap_pi(_mission_item.yaw - _navigator->get_global_position()->yaw);
 
-			if (fabsf(yaw_err) < math::radians(_param_yaw_err.get())) {
+			/* accept yaw if reached or if timeout is set in which case we ignore not forced headings */
+			if (fabsf(yaw_err) < math::radians(_param_yaw_err.get())
+					|| (_param_yaw_timeout.get() >= FLT_EPSILON && !_mission_item.force_heading)) {
 				_waypoint_yaw_reached = true;
 			}
 
